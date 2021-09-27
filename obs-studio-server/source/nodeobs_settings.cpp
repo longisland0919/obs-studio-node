@@ -4284,9 +4284,9 @@ void OBS_settings::LONGISLAND_settings_getWindowLists(
 {
 	rval.push_back(ipc::value((uint64_t)ErrorCode::Ok));
 
-	struct longIsland_cocoa_window *windows = enumerate_windows_json();
+	struct longisland_cocoa_window *windows = enumerate_windows_json();
 
-	struct longIsland_cocoa_window * head = windows;
+	struct longisland_cocoa_window * head = windows;
 	if (rval.size() <= 1)
 		rval.push_back(ipc::value((uint64_t) 0));
 	int index = 0;
@@ -4301,5 +4301,5 @@ void OBS_settings::LONGISLAND_settings_getWindowLists(
 		rval[1].value_union.ui64++;
 		index ++;
 	}
-	longIsland_cocoa_window_free(head);
+	longisland_cocoa_window_free(head);
 }

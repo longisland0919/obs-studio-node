@@ -693,8 +693,8 @@ void OBS_content::LONGISLAND_content_getWindowThumbs(
 	std::string windowIds = args[0].value_str;
 	if (rval.size() <= 1)
 		rval.push_back(ipc::value((uint64_t) 0));
-	struct longIsland_window_thumb * thumbs = enumerate_windows_images_json(windowIds.c_str());
-	struct longIsland_window_thumb * head = thumbs;
+	struct longisland_window_thumb * thumbs = enumerate_windows_images_json(windowIds.c_str());
+	struct longisland_window_thumb * head = thumbs;
 	int index;
 	while (thumbs) {
 		if (thumbs->image_base64) {
@@ -707,6 +707,6 @@ void OBS_content::LONGISLAND_content_getWindowThumbs(
 		thumbs = thumbs->next;
 		index ++;
 	}
-	longIsland_window_thumb_free(head);
+	longisland_window_thumb_free(head);
 //	rval.push_back(ipc::value((uint32_t)surfaceID));
 }

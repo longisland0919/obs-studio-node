@@ -314,9 +314,9 @@ if (APPLE)
 endif ()
 find_library(WINDOW_CAPTURE
 		NAMES window-capture
-		HINTS longIsland-plugins)
+		HINTS longisland-plugins)
 
-include_directories("longIsland-plugins/include")
+include_directories("longisland-plugins/include")
 
 add_executable(
 	${PROJECT_NAME}
