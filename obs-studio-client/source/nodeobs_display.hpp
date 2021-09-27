@@ -35,4 +35,5 @@ namespace display
 	Napi::Value OBS_content_setShouldDrawUI(const Napi::CallbackInfo& info);
 	Napi::Value OBS_content_setDrawGuideLines(const Napi::CallbackInfo& info);
 	Napi::Value OBS_content_createIOSurface(const Napi::CallbackInfo& info);
+	Napi::Value LONGISLAND_content_getWindowThumbs(const Napi::CallbackInfo& info);
 }

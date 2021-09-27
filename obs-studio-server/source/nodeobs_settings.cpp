@@ -21,6 +21,9 @@
 #include "nodeobs_api.h"
 #include "shared.hpp"
 #include "memory-manager.h"
+extern "C" {
+#include "window-utils.h"
+}
 
 #ifdef WIN32
 #include <windows.h>
@@ -66,6 +69,8 @@ void OBS_settings::Register(ipc::server& srv)
 	    "OBS_settings_getOutputAudioDevices", std::vector<ipc::type>{}, OBS_settings_getOutputAudioDevices));
 	cls->register_function(std::make_shared<ipc::function>(
 	    "OBS_settings_getVideoDevices", std::vector<ipc::type>{}, OBS_settings_getVideoDevices));
+	cls->register_function(std::make_shared<ipc::function>(
+	    "LONGISLAND_settings_getWindowLists", std::vector<ipc::type>{}, LONGISLAND_settings_getWindowLists));
 
 	srv.register_collection(cls);
 }
@@ -4268,4 +4273,33 @@ void OBS_settings::OBS_settings_getVideoDevices(
 #endif
 
 	getDevices(source_id, property_name, rval);
+}
+
+
+void OBS_settings::LONGISLAND_settings_getWindowLists(
+    void*                          data,
+    const int64_t                  id,
+    const std::vector<ipc::value>& args,
+    std::vector<ipc::value>&       rval)
+{
+	rval.push_back(ipc::value((uint64_t)ErrorCode::Ok));
+
+	struct longIsland_cocoa_window *windows = enumerate_windows_json();
+
+	struct longIsland_cocoa_window * head = windows;
+	if (rval.size() <= 1)
+		rval.push_back(ipc::value((uint64_t) 0));
+	int index = 0;
+	while (windows) {
+		rval.push_back(ipc::value(windows->window_name));
+		rval.push_back(ipc::value(std::to_string(windows->window_id)));
+		rval.push_back(ipc::value(std::to_string(windows->window_frame.x)));
+		rval.push_back(ipc::value(std::to_string(windows->window_frame.y)));
+		rval.push_back(ipc::value(std::to_string(windows->window_frame.width)));
+		rval.push_back(ipc::value(std::to_string(windows->window_frame.height)));
+		windows = windows->next;
+		rval[1].value_union.ui64++;
+		index ++;
+	}
+	longIsland_cocoa_window_free(head);
 }

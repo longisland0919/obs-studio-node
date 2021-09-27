@@ -510,6 +510,41 @@ Napi::Value settings::OBS_settings_getVideoDevices(const Napi::CallbackInfo& inf
 	return devices_to_js(info, response);
 }
 
+Napi::Value settings::LONGISLAND_settings_getWindowLists(const Napi::CallbackInfo& info)
+{
+	auto conn = GetConnection(info);
+	if (!conn)
+		return info.Env().Undefined();
+
+	std::vector<ipc::value> response =
+	    conn->call_synchronous_helper("Settings", "LONGISLAND_settings_getWindowLists", {});
+
+	if (!ValidateResponse(info, response))
+		return info.Env().Undefined();
+
+	uint64_t items = response[1].value_union.ui64;
+
+	Napi::Array devices = Napi::Array::New(info.Env());
+
+	uint32_t js_array_index = 0;
+//	uint64_t items = response[1].value_union.ui64;
+	if (items > 0) {
+		for (uint64_t idx = 2; idx < items * 6 + 2; idx += 6) {
+			Napi::Object device = Napi::Object::New(info.Env());
+
+			std::string des_str = response[idx].value_str;
+			device.Set("description", Napi::String::New(info.Env(), response[idx].value_str.c_str()));
+			device.Set("id", Napi::String::New(info.Env(), response[idx + 1].value_str.c_str()));
+			device.Set("pos_x", Napi::String::New(info.Env(), response[idx + 2].value_str.c_str()));
+			device.Set("pos_y", Napi::String::New(info.Env(), response[idx + 3].value_str.c_str()));
+			device.Set("width", Napi::String::New(info.Env(), response[idx + 4].value_str.c_str()));
+			device.Set("height", Napi::String::New(info.Env(), response[idx + 5].value_str.c_str()));
+			devices.Set(js_array_index++, device);
+		}
+	}
+	return devices;
+}
+
 void settings::Init(Napi::Env env, Napi::Object exports)
 {
 	exports.Set(
@@ -536,4 +571,8 @@ void settings::Init(Napi::Env env, Napi::Object exports)
 		Napi::String::New(env, "OBS_settings_getVideoDevices"),
 		Napi::Function::New(env, settings::OBS_settings_getVideoDevices)
 		);
+	exports.Set(
+	    Napi::String::New(env, "LONGISLAND_settings_getWindowLists"),
+	    Napi::Function::New(env, settings::LONGISLAND_settings_getWindowLists)
+	);
 }

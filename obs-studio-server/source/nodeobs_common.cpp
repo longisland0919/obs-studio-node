@@ -28,6 +28,9 @@
 #include "shared.hpp"
 
 #include <thread>
+extern "C" {
+#include "window-utils.h"
+}
 
 std::map<std::string, OBS::Display*> displays;
 std::string                          sourceSelected;
@@ -222,6 +225,11 @@ void OBS_content::Register(ipc::server& srv)
 	    "OBS_content_createIOSurface",
 	    std::vector<ipc::type>{ipc::type::String},
 	    OBS_content_createIOSurface));
+
+	cls->register_function(std::make_shared<ipc::function>(
+	    "LONGISLAND_content_getWindowThumbs",
+	    std::vector<ipc::type>{ipc::type::String},
+	    LONGISLAND_content_getWindowThumbs));
 
 	srv.register_collection(cls);
 	g_srv = &srv;
@@ -672,4 +680,33 @@ void OBS_content::OBS_content_createIOSurface(
 	rval.push_back(ipc::value((uint64_t)ErrorCode::Ok));
 #endif
 	AUTO_DEBUG;
+}
+
+void OBS_content::LONGISLAND_content_getWindowThumbs(
+    void*                          data,
+    const int64_t                  id,
+    const std::vector<ipc::value>& args,
+    std::vector<ipc::value>&       rval)
+{
+
+	rval.push_back(ipc::value((uint64_t)ErrorCode::Ok));
+	std::string windowIds = args[0].value_str;
+	if (rval.size() <= 1)
+		rval.push_back(ipc::value((uint64_t) 0));
+	struct longIsland_window_thumb * thumbs = enumerate_windows_images_json(windowIds.c_str());
+	struct longIsland_window_thumb * head = thumbs;
+	int index;
+	while (thumbs) {
+		if (thumbs->image_base64) {
+			rval.push_back(ipc::value(std::to_string(thumbs->window_id)));
+			rval.push_back(ipc::value(std::to_string(thumbs->width)));
+			rval.push_back(ipc::value(std::to_string(thumbs->height)));
+			rval.push_back(ipc::value(thumbs->image_base64));
+			rval[1].value_union.ui64++;
+		}
+		thumbs = thumbs->next;
+		index ++;
+	}
+	longIsland_window_thumb_free(head);
+//	rval.push_back(ipc::value((uint32_t)surfaceID));
 }
