@@ -312,6 +312,11 @@ if (APPLE)
 		${osn-server-osx_SOURCES}
 	)
 endif ()
+find_library(WINDOW_CAPTURE
+		NAMES window-capture
+		HINTS longisland-plugins)
+
+include_directories("longisland-plugins/include")
 
 add_executable(
 	${PROJECT_NAME}
@@ -330,7 +335,7 @@ if(WIN32)
 	target_link_libraries(${PROJECT_NAME} ${PROJECT_LIBRARIES} optimized crashpad)
 else()
 	target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_INCLUDE_PATHS} ${COREFOUNDATION} ${COCOA} ${IOSURF} ${GLKIT} ${AVFOUNDATION} ${IOKit} ${SECURITY_LIBRARY} ${BSM_LIBRARY})
-	target_link_libraries(${PROJECT_NAME} ${PROJECT_LIBRARIES} crashpad ${COREFOUNDATION} ${COCOA} ${IOSURF} ${GLKIT} ${AVFOUNDATION} ${IOKit} ${SECURITY_LIBRARY} ${BSM_LIBRARY})
+	target_link_libraries(${PROJECT_NAME} ${PROJECT_LIBRARIES} crashpad ${WINDOW_CAPTURE} ${COREFOUNDATION} ${COCOA} ${IOSURF} ${GLKIT} ${AVFOUNDATION} ${IOKit} ${SECURITY_LIBRARY} ${BSM_LIBRARY})
 endif()
 
 #Define the OSN_VERSION

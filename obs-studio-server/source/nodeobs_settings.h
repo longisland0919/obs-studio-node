@@ -182,6 +182,11 @@ class OBS_settings
 	    const int64_t                  id,
 	    const std::vector<ipc::value>& args,
 	    std::vector<ipc::value>&       rval);
+	static void LONGISLAND_settings_getWindowLists(
+	    void*                          data,
+	    const int64_t                  id,
+	    const std::vector<ipc::value>& args,
+	    std::vector<ipc::value>&       rval);
 
 	private:
 	// Exposed methods to the frontend

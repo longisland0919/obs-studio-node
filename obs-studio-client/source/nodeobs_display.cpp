@@ -77,6 +77,40 @@ Napi::Value display::OBS_content_createDisplay(const Napi::CallbackInfo& info)
 	return info.Env().Undefined();
 }
 
+Napi::Value display::LONGISLAND_content_getWindowThumbs(const Napi::CallbackInfo& info)
+{
+//	Napi::Buffer<void *> bufferData = ;
+	std::string windowIds= info[0].ToString().Utf8Value();
+
+	auto conn = GetConnection(info);
+	if (!conn)
+		return info.Env().Undefined();
+
+	std::vector<ipc::value> response = conn->call_synchronous_helper("Display", "LONGISLAND_content_getWindowThumbs", {ipc::value(windowIds)});
+
+	if (!ValidateResponse(info, response))
+		return info.Env().Undefined();
+
+	uint64_t items = response[1].value_union.ui64;
+
+	Napi::Array devices = Napi::Array::New(info.Env());
+
+	uint32_t js_array_index = 0;
+	//	uint64_t items = response[1].value_union.ui64;
+	if (items > 0) {
+		for (uint64_t idx = 2; idx < items * 4 + 2; idx += 4) {
+			Napi::Object device = Napi::Object::New(info.Env());
+			std::string des_str = response[idx].value_str;
+			device.Set("id", Napi::String::New(info.Env(), response[idx].value_str.c_str()));
+			device.Set("width", Napi::String::New(info.Env(), response[idx + 1].value_str.c_str()));
+			device.Set("height", Napi::String::New(info.Env(), response[idx + 2].value_str.c_str()));
+			device.Set("base64", Napi::String::New(info.Env(), response[idx + 3].value_str.c_str()));
+			devices.Set(js_array_index++, device);
+		}
+	}
+	return devices;
+}
+
 Napi::Value display::OBS_content_destroyDisplay(const Napi::CallbackInfo& info)
 {
 	std::string key = info[0].ToString().Utf8Value();
@@ -319,4 +353,7 @@ void display::Init(Napi::Env env, Napi::Object exports)
 	exports.Set(
 		Napi::String::New(env, "OBS_content_createIOSurface"),
 		Napi::Function::New(env, display::OBS_content_createIOSurface));
+	exports.Set(
+	    Napi::String::New(env, "LONGISLAND_content_getWindowThumbs"),
+	    Napi::Function::New(env, display::LONGISLAND_content_getWindowThumbs));
 }

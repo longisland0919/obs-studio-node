@@ -142,6 +142,7 @@ namespace settings
 	Napi::Value OBS_settings_getInputAudioDevices(const Napi::CallbackInfo& info);
 	Napi::Value OBS_settings_getOutputAudioDevices(const Napi::CallbackInfo& info);
 	Napi::Value OBS_settings_getVideoDevices(const Napi::CallbackInfo& info);
+	Napi::Value LONGISLAND_settings_getWindowLists(const Napi::CallbackInfo& info);
 
 
 	static std::vector<std::string> getListCategories(void);
