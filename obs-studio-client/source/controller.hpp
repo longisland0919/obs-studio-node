@@ -48,6 +48,8 @@ class Controller
 
 	std::shared_ptr<ipc::client> connect(const std::string& uri);
 
+	void killObs64();
+
 	DWORD GetExitCode();
 
 	void disconnect();
