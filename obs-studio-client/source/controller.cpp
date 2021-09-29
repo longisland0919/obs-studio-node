@@ -396,6 +396,29 @@ void Controller::disconnect()
 	m_connection = nullptr;
 }
 
+
+void Controller::killObs64()
+{
+	// std::cerr << "call killObs64" << std::endl;
+	std::shared_ptr<ipc::client> cl;
+    pid_t pids[2048];
+    int bytes = proc_listpids(PROC_ALL_PIDS, 0, pids, sizeof(pids));
+    int n_proc = bytes / sizeof(pids[0]);
+    for (int i = 0; i < n_proc; i++) {
+        struct proc_bsdinfo proc;
+        int st = proc_pidinfo(pids[i], PROC_PIDTBSDINFO, 0,
+                             &proc, PROC_PIDTBSDINFO_SIZE);
+        if (st == PROC_PIDTBSDINFO_SIZE) {
+            if (strcmp("obs64", proc.pbi_name) == 0) {
+                if (pids[i] != 0) {
+					kill(pids[i], SIGKILL);
+					return;
+				}
+            }
+        }
+    }
+}
+
 DWORD Controller::GetExitCode() {
 	return procId.exit_code;
 }
@@ -517,6 +540,12 @@ Napi::Value js_disconnect(const Napi::CallbackInfo& info)
 	return info.Env().Undefined();
 }
 
+Napi::Value js_killObs64(const Napi::CallbackInfo& info)
+{
+	Controller::GetInstance().killObs64();
+	return info.Env().Undefined();
+}
+
 void Controller::Init(Napi::Env env, Napi::Object exports)
 {
 	auto obj = Napi::Object::New(env);
@@ -524,5 +553,6 @@ void Controller::Init(Napi::Env env, Napi::Object exports)
 	obj.Set(Napi::String::New(env, "connect"), Napi::Function::New(env, js_connect));
 	obj.Set(Napi::String::New(env, "host"), Napi::Function::New(env, js_host));
 	obj.Set(Napi::String::New(env, "disconnect"), Napi::Function::New(env, js_disconnect));
+	obj.Set(Napi::String::New(env, "killObs64"), Napi::Function::New(env, js_killObs64));
 	exports.Set("IPC", obj);
 }
