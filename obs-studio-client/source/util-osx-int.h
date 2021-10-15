@@ -41,6 +41,7 @@ public:
     void installPlugin(void);
     void uninstallPlugin(void);
     void setServerWorkingDirectoryPath(std::string path);
+	double longislandGetScreenDpi(void);
 
 private:
     void * self;
