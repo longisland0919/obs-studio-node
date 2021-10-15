@@ -409,6 +409,13 @@ else ()
 		DIRECTORY "${libobs_SOURCE_DIR}/bin/"
 		DESTINATION "./" USE_SOURCE_PERMISSIONS PATTERN "*.lib" EXCLUDE
 	)
+	#add longisland plugins
+	install(
+			DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/longisland-plugins/"
+			DESTINATION "./"
+			USE_SOURCE_PERMISSIONS
+			PATTERN "include" EXCLUDE
+	)
 endif ()
 
 if (WIN32)

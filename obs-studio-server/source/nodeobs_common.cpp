@@ -393,6 +393,10 @@ void OBS_content::OBS_content_resizeDisplay(
 
 	display->m_gsInitData.cx = args[1].value_union.ui32;
 	display->m_gsInitData.cy = args[2].value_union.ui32;
+#ifdef __APPLE__
+	display->m_gsInitData.cx = (uint32_t) (display->m_gsInitData.cx * g_util_osx->longislandGetScreenDpi());
+	display->m_gsInitData.cy = (uint32_t) (display->m_gsInitData.cy * g_util_osx->longislandGetScreenDpi());
+#endif
 
 	// Resize Display
     obs_display_resize(display->m_display,

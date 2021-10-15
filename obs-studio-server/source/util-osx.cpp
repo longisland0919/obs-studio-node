@@ -73,3 +73,9 @@ std::string UtilInt::getWorkingDirectory(void)
 {
     return _impl->getWorkingDirectory();
 }
+#ifdef __APPLE__
+double UtilInt::longislandGetScreenDpi(void)
+{
+	return _impl->longislandGetScreenDpi();
+}
+#endif
