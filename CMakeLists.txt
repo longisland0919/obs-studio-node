@@ -87,7 +87,7 @@ endif()
 # We support mac 10.13, but nlohmannjson 3.10.5 min sdk is 10.15, so we have to set GIT_TAG = 3.10.3
 FetchContent_Declare(
   nlohmannjson
-  GIT_REPOSITORY https://github.com.cnpmjs.org/nlohmann/json
+  GIT_REPOSITORY https://github.com/nlohmann/json
 	GIT_TAG v3.10.3
 )
 
