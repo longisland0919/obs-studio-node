@@ -157,9 +157,13 @@ set_target_properties(
 	VERSION ${PROJECT_VERSION}
 	SOVERSION ${PROJECT_VERSION}
 	PREFIX "" SUFFIX ".node"
+	COMPILE_FLAGS "-mmacosx-version-min=10.13"
 )
 
 target_compile_definitions(obs_studio_client PRIVATE BUILDING_NODE_EXTENSION)
+if (APPLE)
+	set(CMAKE_OSX_DEPLOYMENT_TARGET "10.13")
+endif()
 
 if(WIN32)
 	target_compile_definitions(
