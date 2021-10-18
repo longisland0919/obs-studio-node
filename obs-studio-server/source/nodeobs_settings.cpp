@@ -4298,6 +4298,7 @@ void OBS_settings::LONGISLAND_settings_getWindowLists(
 		rval.push_back(ipc::value(std::to_string(windows->window_frame.width)));
 		rval.push_back(ipc::value(std::to_string(windows->window_frame.height)));
 		rval.push_back(ipc::value(windows->owner_name));
+		rval.push_back(ipc::value(std::to_string(windows->owner_pid)));
 		windows = windows->next;
 		rval[1].value_union.ui64++;
 		index ++;
