@@ -529,7 +529,7 @@ Napi::Value settings::LONGISLAND_settings_getWindowLists(const Napi::CallbackInf
 	uint32_t js_array_index = 0;
 //	uint64_t items = response[1].value_union.ui64;
 	if (items > 0) {
-		for (uint64_t idx = 2; idx < items * 7 + 2; idx += 7) {
+		for (uint64_t idx = 2; idx < items * 8 + 2; idx += 8) {
 			Napi::Object device = Napi::Object::New(info.Env());
 
 			std::string des_str = response[idx].value_str;
@@ -540,6 +540,7 @@ Napi::Value settings::LONGISLAND_settings_getWindowLists(const Napi::CallbackInf
 			device.Set("width", Napi::String::New(info.Env(), response[idx + 4].value_str.c_str()));
 			device.Set("height", Napi::String::New(info.Env(), response[idx + 5].value_str.c_str()));
 			device.Set("owner_name", Napi::String::New(info.Env(), response[idx + 6].value_str.c_str()));
+			device.Set("owner_pid", Napi::String::New(info.Env(), response[idx + 7].value_str.c_str()));
 			devices.Set(js_array_index++, device);
 		}
 	}
