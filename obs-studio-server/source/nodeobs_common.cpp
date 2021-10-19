@@ -180,7 +180,7 @@ void OBS_content::Register(ipc::server& srv)
 
 	cls->register_function(std::make_shared<ipc::function>(
 	    "OBS_content_resizeDisplay",
-	    std::vector<ipc::type>{ipc::type::String, ipc::type::UInt32, ipc::type::UInt32},
+	    std::vector<ipc::type>{ipc::type::String, ipc::type::UInt32, ipc::type::UInt32, ipc::type::Double},
 	    OBS_content_resizeDisplay));
 
 	cls->register_function(std::make_shared<ipc::function>(
@@ -394,8 +394,10 @@ void OBS_content::OBS_content_resizeDisplay(
 	display->m_gsInitData.cx = args[1].value_union.ui32;
 	display->m_gsInitData.cy = args[2].value_union.ui32;
 #ifdef __APPLE__
-	display->m_gsInitData.cx = (uint32_t) (display->m_gsInitData.cx * g_util_osx->longislandGetScreenDpi());
-	display->m_gsInitData.cy = (uint32_t) (display->m_gsInitData.cy * g_util_osx->longislandGetScreenDpi());
+	//dpi just can be changed when the size of display is changed.
+	display->m_dpi = args[3].value_union.fp64;
+	display->m_gsInitData.cx = (uint32_t) (display->m_gsInitData.cx * display->m_dpi);
+	display->m_gsInitData.cy = (uint32_t) (display->m_gsInitData.cy * display->m_dpi);
 #endif
 
 	// Resize Display

@@ -88,10 +88,6 @@ std::string UtilObjCInt::getDefaultVideoSavePath(void)
 	return url.path.fileSystemRepresentation;
 }
 
-double UtilObjCInt::longislandGetScreenDpi() {
-    return [NSScreen mainScreen].backingScaleFactor;
-}
-
 void UtilObjCInt::runApplication(void)
 {
     worker = new std::thread(&UtilObjCInt::wait_terminate, this);

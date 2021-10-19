@@ -25,7 +25,6 @@
 #include <graphics/matrix4.h>
 #include <graphics/vec4.h>
 #include <util/platform.h>
-#include "shared.hpp"
 
 std::vector<std::pair<std::string, std::pair<uint32_t, uint32_t>>> sourcesSize;
 
@@ -241,6 +240,7 @@ OBS::Display::Display()
 #if defined(_WIN32)
 	DisplayWndClass();
 #elif defined(__APPLE__)
+	m_dpi = 2;
 #elif defined(__linux__) || defined(__FreeBSD__)
 #endif
 
@@ -756,7 +756,7 @@ inline void DrawBoxAt(OBS::Display* dp, float_t x, float_t y, matrix4& mtx)
 	vec3 offset = {-HANDLE_RADIUS, -HANDLE_RADIUS, 0.0f};
 	double_t dpi = 1;
 #ifdef __APPLE__
-	dpi = g_util_osx->longislandGetScreenDpi();
+	dpi = dp->m_dpi;
 #endif
 	offset.x *= dp->m_previewToWorldScale.x * dpi;
 	offset.y *= dp->m_previewToWorldScale.y * dpi;
@@ -782,7 +782,7 @@ inline void DrawSquareAt(OBS::Display* dp, float_t x, float_t y, matrix4& mtx)
 	vec3 offset = {-HANDLE_RADIUS, -HANDLE_RADIUS, 0.0f};
 	double_t dpi = 1;
 #ifdef __APPLE__
-	dpi = g_util_osx->longislandGetScreenDpi();
+	dpi = dp->m_dpi;
 #endif
 	offset.x *= dp->m_previewToWorldScale.x * dpi;
 	offset.y *= dp->m_previewToWorldScale.y * dpi;
@@ -988,7 +988,7 @@ bool OBS::Display::DrawSelectedSource(obs_scene_t* scene, obs_sceneitem_t* item,
 		std::vector<char> buf(8);
 		float_t           pt = 8 * dp->m_previewToWorldScale.y;
 #ifdef __APPLE__
-		pt = (float_t) (pt * g_util_osx->longislandGetScreenDpi());
+		pt = (float_t) (pt * dp->m_dpi);
 #endif
 		for (size_t n = 0; n < 4; n++) {
 			bool isIn = (edge[n].x >= 0) && (edge[n].x < sceneWidth) && (edge[n].y >= 0) && (edge[n].y < sceneHeight);
