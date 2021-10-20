@@ -39,7 +39,6 @@ public:
     std::string getUserDataPath(void);
     std::string getWorkingDirectory(void);
     void wait_terminate(void);
-	double longislandGetScreenDpi(void);
 
 private:
     void * self;

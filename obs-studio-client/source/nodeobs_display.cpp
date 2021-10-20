@@ -195,12 +195,13 @@ Napi::Value display::OBS_content_resizeDisplay(const Napi::CallbackInfo& info)
 	std::string key = info[0].ToString().Utf8Value();
 	uint32_t width = info[1].ToNumber().Uint32Value();
 	uint32_t height = info[2].ToNumber().Uint32Value();
+	double_t dpi = info[3].ToNumber().DoubleValue();
 
 	auto conn = GetConnection(info);
 	if (!conn)
 		return info.Env().Undefined();
 
-	conn->call("Display", "OBS_content_resizeDisplay", {ipc::value(key), ipc::value(width), ipc::value(height)});
+	conn->call("Display", "OBS_content_resizeDisplay", {ipc::value(key), ipc::value(width), ipc::value(height), ipc::value(dpi)});
 
 	return info.Env().Undefined();
 }

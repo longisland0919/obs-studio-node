@@ -39,9 +39,6 @@ public:
     std::vector<std::pair<uint32_t, uint32_t>> getAvailableScreenResolutions(void);
     std::string getUserDataPath(void);
     std::string getWorkingDirectory(void);
-#ifdef __APPLE__
-	double longislandGetScreenDpi(void);
-#endif
 
 private:
     UtilObjCInt * _impl;
