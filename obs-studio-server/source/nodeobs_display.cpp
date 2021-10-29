@@ -321,7 +321,8 @@ OBS::Display::Display()
 
 	UpdatePreviewArea();
 
-	m_drawGuideLines = true;
+	//do not draw guidelines at default
+	m_drawGuideLines = false;
 }
 
 OBS::Display::Display(uint64_t windowHandle, enum obs_video_rendering_mode mode) : Display()
@@ -922,27 +923,27 @@ bool OBS::Display::DrawSelectedSource(obs_scene_t* scene, obs_sceneitem_t* item,
 	DrawSquareAt(dp, 1, 0, boxTransform);
 	DrawSquareAt(dp, 0, 1, boxTransform);
 	DrawSquareAt(dp, 1, 1, boxTransform);
-	DrawSquareAt(dp, 0.5, 0, boxTransform);
-	DrawSquareAt(dp, 0.5, 1, boxTransform);
-	DrawSquareAt(dp, 0, 0.5, boxTransform);
-	DrawSquareAt(dp, 1, 0.5, boxTransform);
+//	DrawSquareAt(dp, 0.5, 0, boxTransform);
+//	DrawSquareAt(dp, 0.5, 1, boxTransform);
+//	DrawSquareAt(dp, 0, 0.5, boxTransform);
+//	DrawSquareAt(dp, 1, 0.5, boxTransform);
 
-	gs_load_vertexbuffer(dp->m_boxLine->Update(false));
-	vec4_set(
-	    &color,
-	    (dp->m_resizeOuterColor & 0xFF) / 255.0f,
-	    ((dp->m_resizeOuterColor & 0xFF00) >> 8) / 255.0f,
-	    ((dp->m_resizeOuterColor & 0xFF0000) >> 16) / 255.0f,
-	    ((dp->m_resizeOuterColor & 0xFF000000) >> 24) / 255.0f);
-	gs_effect_set_vec4(solid_color, &color);
-	DrawBoxAt(dp, 0, 0, boxTransform);
-	DrawBoxAt(dp, 1, 0, boxTransform);
-	DrawBoxAt(dp, 0, 1, boxTransform);
-	DrawBoxAt(dp, 1, 1, boxTransform);
-	DrawBoxAt(dp, 0.5, 0, boxTransform);
-	DrawBoxAt(dp, 0.5, 1, boxTransform);
-	DrawBoxAt(dp, 0, 0.5, boxTransform);
-	DrawBoxAt(dp, 1, 0.5, boxTransform);
+//	gs_load_vertexbuffer(dp->m_boxLine->Update(false));
+//	vec4_set(
+//	    &color,
+//	    (dp->m_resizeOuterColor & 0xFF) / 255.0f,
+//	    ((dp->m_resizeOuterColor & 0xFF00) >> 8) / 255.0f,
+//	    ((dp->m_resizeOuterColor & 0xFF0000) >> 16) / 255.0f,
+//	    ((dp->m_resizeOuterColor & 0xFF000000) >> 24) / 255.0f);
+//	gs_effect_set_vec4(solid_color, &color);
+//	DrawBoxAt(dp, 0, 0, boxTransform);
+//	DrawBoxAt(dp, 1, 0, boxTransform);
+//	DrawBoxAt(dp, 0, 1, boxTransform);
+//	DrawBoxAt(dp, 1, 1, boxTransform);
+//	DrawBoxAt(dp, 0.5, 0, boxTransform);
+//	DrawBoxAt(dp, 0.5, 1, boxTransform);
+//	DrawBoxAt(dp, 0, 0.5, boxTransform);
+//	DrawBoxAt(dp, 1, 0.5, boxTransform);
 
 	if (dp->m_drawGuideLines) {
 		vec4_set(
