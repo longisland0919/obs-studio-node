@@ -366,7 +366,8 @@ Napi::Value service::OBS_service_installVirtualCamPlugin(const Napi::CallbackInf
 	WaitForSingleObject(ShExecInfob.hProcess, INFINITE);
 	CloseHandle(ShExecInfob.hProcess);
 #elif __APPLE__
-	g_util_osx->installPlugin();
+	// g_util_osx->installPlugin();
+	g_util_osx->LONGISLAND_installPlugin();
 #endif
 	return info.Env().Undefined();
 }
@@ -405,7 +406,8 @@ Napi::Value service::OBS_service_uninstallVirtualCamPlugin(const Napi::CallbackI
 	WaitForSingleObject(ShExecInfob.hProcess, INFINITE);
 	CloseHandle(ShExecInfob.hProcess);
 #elif __APPLE__
-	g_util_osx->uninstallPlugin();
+	// g_util_osx->uninstallPlugin();
+	g_util_osx->LONGISLAND_uninstallPlugin();
 #endif
 	return info.Env().Undefined();
 }
@@ -419,6 +421,17 @@ Napi::Value service::OBS_service_isVirtualCamPluginInstalled(const Napi::Callbac
 #elif __APPLE__
 	// Not implemented
 	return info.Env().Undefined();
+#endif
+}
+
+Napi::Value service::OBS_service_isVirtualCamPluginNeedsInstall(const Napi::CallbackInfo& info) {
+#ifdef WIN32
+	// Not implemented
+	return info.Env().Undefined();
+#elif __APPLE__
+	bool needs;
+	g_util_osx->LONGISLAND_isVirtualCamPluginNeedsInstall(needs);
+	return Napi::Boolean::New(info.Env(), needs);
 #endif
 }
 
@@ -481,4 +494,7 @@ void service::Init(Napi::Env env, Napi::Object exports)
 	exports.Set(
 		Napi::String::New(env, "OBS_service_isVirtualCamPluginInstalled"),
 		Napi::Function::New(env, service::OBS_service_isVirtualCamPluginInstalled));
+	exports.Set(
+		Napi::String::New(env, "OBS_service_isVirtualCamPluginNeedsInstall"),
+		Napi::Function::New(env, service::OBS_service_isVirtualCamPluginNeedsInstall));
 }

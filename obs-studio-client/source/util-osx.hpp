@@ -36,8 +36,10 @@ public:
     void requestPermissions(void *async_cb, perms_cb cb);
     void installPlugin(void);
     void uninstallPlugin(void);
+    void LONGISLAND_installPlugin(void);
+    void LONGISLAND_uninstallPlugin(void);
+    void LONGISLAND_isVirtualCamPluginNeedsInstall(bool &needs);
     void setServerWorkingDirectoryPath(std::string path);
-
 private:
     UtilObjCInt * _impl;
 };

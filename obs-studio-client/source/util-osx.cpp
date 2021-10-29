@@ -53,6 +53,21 @@ void UtilInt::uninstallPlugin(void)
     _impl->uninstallPlugin();
 }
 
+void UtilInt::LONGISLAND_installPlugin(void)
+{
+    _impl->LONGISLAND_installPlugin();
+}
+
+void UtilInt::LONGISLAND_uninstallPlugin(void)
+{
+    _impl->LONGISLAND_uninstallPlugin();
+}
+
+void UtilInt::LONGISLAND_isVirtualCamPluginNeedsInstall(bool &needs)
+{
+    _impl->LONGISLAND_isVirtualCamPluginNeedsInstall(needs);
+}
+
 void UtilInt::setServerWorkingDirectoryPath(std::string path)
 {
     _impl->setServerWorkingDirectoryPath(path);
