@@ -122,4 +122,63 @@ void UtilObjCInt::uninstallPlugin()
 	NSLog(@"errors: %@", error);
 }
 
+void UtilObjCInt::LONGISLAND_installPlugin()
+{
+	NSDictionary *error = [NSDictionary dictionary];
+	std::string pathToScript = g_server_working_dir + "/data/obs-plugins/mac-virtualcam/install-plugin.sh";
+	std::cout << "launching: " << pathToScript.c_str() << std::endl;
+
+	replace(pathToScript, " ", "\\\\ ");
+	std::string arg = g_server_working_dir + "/data/obs-plugins/mac-virtualcam";
+	replace(arg, " ", "\\\\ ");
+	std::string cmd = "do shell script \"/bin/sh " + pathToScript + " " + arg + "\" with administrator privileges";
+
+	NSString *script = [NSString stringWithCString:cmd.c_str()
+	                            encoding:[NSString defaultCStringEncoding]];
+	NSAppleScript *run = [[NSAppleScript alloc]initWithSource:script];
+	[run executeAndReturnError:&error];
+	NSLog(@"errors: %@", error);
+}
+
+void UtilObjCInt::LONGISLAND_uninstallPlugin()
+{
+	NSDictionary *error = [NSDictionary dictionary];
+	std::string cmd =
+		"do shell script \"rm -rf /Library/CoreMediaIO/Plug-Ins/DAL/vizard-mac-virtualcam.plugin \" with administrator privileges";
+
+	NSString *script = [NSString stringWithCString:cmd.c_str()
+	                            encoding:[NSString defaultCStringEncoding]];
+	NSAppleScript *run = [[NSAppleScript alloc]initWithSource:script];
+	[run executeAndReturnError:&error];
+	NSLog(@"errors: %@", error);
+}
+
+void UtilObjCInt::LONGISLAND_isVirtualCamPluginNeedsInstall(bool &needs)
+{
+	NSString *installedPlistPath = @"/Library/CoreMediaIO/Plug-Ins/DAL/vizard-mac-virtualcam.plugin/Contents/Info.plist";
+    if (![[NSFileManager defaultManager] fileExistsAtPath:installedPlistPath]) {
+		needs = true;
+        return;
+	}
+	NSDictionary *installedPlistDictionary = [[NSDictionary alloc] initWithContentsOfFile:installedPlistPath];
+	if (!installedPlistDictionary) {
+		needs = true;
+		return;
+	}
+	std::string currentPlistPath = g_server_working_dir + "/data/obs-plugins/mac-virtualcam/vizard-mac-virtualcam.plugin/Contents/Info.plist";
+	NSString *currentPlistPathString = [NSString stringWithCString:currentPlistPath.c_str()
+	                            encoding:[NSString defaultCStringEncoding]];
+	NSLog(@"currentPlistPathString: %@", currentPlistPathString);
+	if (![[NSFileManager defaultManager] fileExistsAtPath:currentPlistPathString]) {
+		needs = false;
+        return;
+	}
+	NSDictionary *currentPlistDictionary = [[NSDictionary alloc] initWithContentsOfFile:currentPlistPathString];
+	if (!currentPlistDictionary) {
+		needs = false;
+		return;
+	}
+	needs = ![installedPlistDictionary[@"CFBundleVersion"] isEqualToString: currentPlistDictionary[@"CFBundleVersion"]];
+}
+
 @end
