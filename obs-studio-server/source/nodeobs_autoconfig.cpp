@@ -683,15 +683,20 @@ void autoConfig::TestBandwidthThread(void)
 
 			key = obs_service_get_key(currentService);
 			if (key.empty()) {
-				sendErrorMessage("invalid_stream_settings");
+				sendErrorMessage("invalid_stream_settings  key == null");
+				gotError = true;
+			}
+			server = obs_service_get_url(currentService);
+			if (server.empty()) {
+				sendErrorMessage("invalid_stream_settings  url == null");
 				gotError = true;
 			}
 		} else {
-			sendErrorMessage("invalid_stream_settings");
+			sendErrorMessage("invalid_stream_settings can not get settings");
 			gotError = true;
 		}
 	} else {
-		sendErrorMessage("invalid_stream_settings");
+		sendErrorMessage("invalid_stream_settings can not get service");
 		gotError = true;
 	}
 
@@ -842,7 +847,7 @@ void autoConfig::TestBandwidthThread(void)
 
 		if (EvaluateBandwidth(info, connected, stopped, success, errorOnStop, service_settings, service, output, vencoder_settings) < 0) {
 			eventsMutex.lock();
-			events.push(AutoConfigInfo("error", "invalid_stream_settings", 0));
+			events.push(AutoConfigInfo("error", "invalid_stream_settings EvaluateBandwidth < 0", 0));
 			eventsMutex.unlock();
 			gotError = true;
 		} else {
@@ -865,7 +870,7 @@ void autoConfig::TestBandwidthThread(void)
 
 	if (!success && !gotError) {
 		eventsMutex.lock();
-		events.push(AutoConfigInfo("error", "invalid_stream_settings", 0));
+		events.push(AutoConfigInfo("error", "invalid_stream_settings not success or get error", 0));
 		eventsMutex.unlock();
 		gotError = true;
 	}
@@ -1575,7 +1580,7 @@ void autoConfig::SaveStreamSettings()
 	config_remove_value(ConfigManager::getInstance().getBasic(), "SimpleOutput", "UseAdvanced");
 
 	config_save_safe(ConfigManager::getInstance().getBasic(), "tmp", nullptr);
-	
+
 	eventsMutex.lock();
 	events.push(AutoConfigInfo("stopping_step", "saving_service", 100));
 	eventsMutex.unlock();
@@ -1604,7 +1609,7 @@ void autoConfig::SaveSettings()
 		config_set_uint(ConfigManager::getInstance().getBasic(), "Video", "FPSType", 0);
 		config_set_string(ConfigManager::getInstance().getBasic(), "Video", "FPSCommon",
 				std::to_string(idealFPSNum).c_str());
-		std::string fpsvalue = 
+		std::string fpsvalue =
 			config_get_string(ConfigManager::getInstance().getBasic(), "Video", "FPSCommon");
 	}
 
