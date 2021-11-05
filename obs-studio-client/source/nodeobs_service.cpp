@@ -435,6 +435,17 @@ Napi::Value service::OBS_service_isVirtualCamPluginNeedsInstall(const Napi::Call
 #endif
 }
 
+Napi::Value service::OBS_service_openSystemPreferencePanel(const Napi::CallbackInfo& info) {
+#ifdef WIN32
+	// Not implemented
+	return info.Env().Undefined();
+#elif __APPLE__
+	bool success;
+	g_util_osx->LONGISLAND_openSystemPreferencePanel(success);
+	return Napi::Boolean::New(info.Env(), success);
+#endif
+}
+
 void service::Init(Napi::Env env, Napi::Object exports)
 {
 	exports.Set(
@@ -497,4 +508,7 @@ void service::Init(Napi::Env env, Napi::Object exports)
 	exports.Set(
 		Napi::String::New(env, "OBS_service_isVirtualCamPluginNeedsInstall"),
 		Napi::Function::New(env, service::OBS_service_isVirtualCamPluginNeedsInstall));
+	exports.Set(
+		Napi::String::New(env, "OBS_service_openSystemPreferencePanel"),
+		Napi::Function::New(env, service::OBS_service_openSystemPreferencePanel));
 }
