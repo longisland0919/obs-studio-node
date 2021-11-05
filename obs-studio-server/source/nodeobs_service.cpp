@@ -2388,8 +2388,9 @@ void OBS_service::releaseStreamingOutput()
 
 	twitchSoundtrackEnabled = false;
 
-	obs_output_release(streamingOutput);
-	streamingOutput = nullptr;
+	//when we add these code , stopping signal will be triggered early, so we don't release output util next start streaming;
+//	obs_output_release(streamingOutput);
+//	streamingOutput = nullptr;
 }
 
 void OBS_service::waitReleaseWorker()
