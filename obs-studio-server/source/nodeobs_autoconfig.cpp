@@ -139,8 +139,8 @@ bool regionOC = false;
 
 bool preferHighFPS  = true;
 bool preferHardware = true;
-int  specificFPSNum = 0;
-int  specificFPSDen = 0;
+int  specificFPSNum = 30;
+int  specificFPSDen = 1;
 
 std::condition_variable cv;
 std::mutex              m;
@@ -1424,7 +1424,13 @@ bool autoConfig::CheckSettings(void)
 	ovi.fps_num       = idealFPSNum;
 	ovi.fps_den       = 1;
 
-	obs_reset_video(&ovi);
+	int ret = obs_reset_video(&ovi);
+	if (OBS_VIDEO_SUCCESS != ret) {
+		blog(LOG_ERROR, "failed ret = %d", ret);
+		obs_data_release(settings);
+		obs_service_release(service);
+		return false;
+	}
 
 	OBSEncoder vencoder = obs_video_encoder_create(GetEncoderId(streamingEncoder), "test_encoder", nullptr, nullptr);
 	OBSEncoder aencoder = obs_audio_encoder_create("ffmpeg_aac", "test_aac", nullptr, 0, nullptr);

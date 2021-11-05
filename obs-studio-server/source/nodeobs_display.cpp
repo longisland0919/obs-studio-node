@@ -1193,11 +1193,15 @@ void OBS::Display::DisplayCallback(void* displayPtr, uint32_t cx, uint32_t cy)
 		* We also assume that the active source within that transition is
 		* the scene that we need */
 		obs_source_t* transition = obs_get_output_source(0);
-		source                   = obs_transition_get_active_source(transition);
-		obs_source_release(transition);
+		if (transition) {
+			source                   = obs_transition_get_active_source(transition);
+			obs_source_release(transition);
+		} else {
+			source = nullptr;
+		}
 	}
 
-	if (dp->m_shouldDrawUI == true) {
+	if (dp->m_shouldDrawUI && source) {
 		// Display-Aligned Drawing
 		vec2 tlCorner = {(float)-dp->m_previewOffset.first, (float)-dp->m_previewOffset.second};
 		vec2 brCorner = {(float)(cx - dp->m_previewOffset.first), (float)(cy - dp->m_previewOffset.second)};
