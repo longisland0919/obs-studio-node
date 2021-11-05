@@ -270,6 +270,36 @@ Napi::Value api::GetPermissionsStatus(const Napi::CallbackInfo& info)
 	return info.Env().Undefined();
 }
 
+Napi::Value api::LONGISLAND_GetPermissionsStatus(const Napi::CallbackInfo& info)
+{
+#ifdef __APPLE__
+	int webcam, mic;
+	g_util_osx->LONGISLAND_getPermissionsStatus(webcam, mic);
+
+	Napi::Object perms = Napi::Object::New(info.Env());
+	perms.Set(
+		Napi::String::New(info.Env(), "webcamPermission"),
+		Napi::Number::New(info.Env(), webcam));
+	perms.Set(
+		Napi::String::New(info.Env(), "micPermission"),
+		Napi::Number::New(info.Env(), mic));
+
+	return perms;
+#endif
+	return info.Env().Undefined();
+}
+
+Napi::Value api::LONGISLAND_GetScreenRecordPermissionStatus(const Napi::CallbackInfo& info)
+{
+#ifdef __APPLE__
+	bool permission;
+	g_util_osx->LONGISLAND_getScreenRecordPermissionStatus(permission);
+	return Napi::Boolean::New(info.Env(), permission);
+#endif
+	return info.Env().Undefined();
+}
+
+
 Napi::Value api::RequestPermissions(const Napi::CallbackInfo& info)
 {
 #ifdef __APPLE__
@@ -327,4 +357,6 @@ void api::Init(Napi::Env env, Napi::Object exports)
 	exports.Set(Napi::String::New(env, "SetUsername"), Napi::Function::New(env, api::SetUsername));
 	exports.Set(Napi::String::New(env, "GetPermissionsStatus"), Napi::Function::New(env, api::GetPermissionsStatus));
 	exports.Set(Napi::String::New(env, "RequestPermissions"), Napi::Function::New(env, api::RequestPermissions));
+	exports.Set(Napi::String::New(env, "LONGISLAND_GetPermissionsStatus"), Napi::Function::New(env, api::LONGISLAND_GetPermissionsStatus));
+	exports.Set(Napi::String::New(env, "LONGISLAND_GetScreenRecordPermissionStatus"), Napi::Function::New(env, api::LONGISLAND_GetScreenRecordPermissionStatus));
 }

@@ -70,4 +70,5 @@ namespace service
 	Napi::Value OBS_service_uninstallVirtualCamPlugin(const Napi::CallbackInfo& info);
 	Napi::Value OBS_service_isVirtualCamPluginInstalled(const Napi::CallbackInfo& info);
 	Napi::Value OBS_service_isVirtualCamPluginNeedsInstall(const Napi::CallbackInfo& info);
+	Napi::Value OBS_service_openSystemPreferencePanel(const Napi::CallbackInfo& info);
 }

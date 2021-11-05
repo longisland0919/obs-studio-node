@@ -181,4 +181,49 @@ void UtilObjCInt::LONGISLAND_isVirtualCamPluginNeedsInstall(bool &needs)
 	needs = ![installedPlistDictionary[@"CFBundleVersion"] isEqualToString: currentPlistDictionary[@"CFBundleVersion"]];
 }
 
+void UtilObjCInt::LONGISLAND_getPermissionsStatus(int &webcam, int &mic) {
+	NSOperatingSystemVersion OSversion = [NSProcessInfo processInfo].operatingSystemVersion;
+	if (OSversion.majorVersion >= 10 && OSversion.minorVersion >= 14) {
+		AVAuthorizationStatus camStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+		webcam = camStatus;
+
+		AVAuthorizationStatus micStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
+		mic = micStatus;
+
+		// m_webcam_perm = webcam == AVAuthorizationStatusAuthorized;
+		// m_mic_perm    = mic == AVAuthorizationStatusAuthorized;
+	} else {
+		webcam = AVAuthorizationStatusAuthorized;
+		mic = AVAuthorizationStatusAuthorized;
+	}
+}
+
+void UtilObjCInt::LONGISLAND_getScreenRecordPermissionStatus(bool &permission) {
+	NSOperatingSystemVersion OSversion = [NSProcessInfo processInfo].operatingSystemVersion;
+	if (OSversion.majorVersion >= 10 && OSversion.minorVersion >= 15) {
+		CFArrayRef windowList = CGWindowListCopyWindowInfo(kCGWindowListOptionOnScreenOnly, kCGNullWindowID);
+        NSUInteger numberOfWindows = CFArrayGetCount(windowList);
+        NSUInteger numberOfWindowsWithName = 0;
+        for (int idx = 0; idx < numberOfWindows; idx++) {
+            NSDictionary *windowInfo = (NSDictionary *)CFArrayGetValueAtIndex(windowList, idx);
+            NSString *windowName = windowInfo[(id)kCGWindowName];
+            if (windowName) {
+                numberOfWindowsWithName++;
+            } else {
+                //no kCGWindowName detected -> not enabled
+                break; //breaking early, numberOfWindowsWithName not increased
+            }
+        }
+        CFRelease(windowList);
+        permission = numberOfWindows == numberOfWindowsWithName;
+	} else {
+		permission = true;
+	}
+}
+
+void UtilObjCInt::LONGISLAND_openSystemPreferencePanel(bool &success) {
+    NSURL *url = [NSURL URLWithString:@"x-apple.systempreferences:com.apple.preference.security"];
+    success = [[NSWorkspace sharedWorkspace] openURL:url];
+}
+
 @end

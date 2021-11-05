@@ -72,3 +72,16 @@ void UtilInt::setServerWorkingDirectoryPath(std::string path)
 {
     _impl->setServerWorkingDirectoryPath(path);
 }
+
+void UtilInt::LONGISLAND_getPermissionsStatus(int &webcam, int &mic)
+{
+    _impl->LONGISLAND_getPermissionsStatus(webcam, mic);
+}
+
+void UtilInt::LONGISLAND_getScreenRecordPermissionStatus(bool &permission) {
+    _impl->LONGISLAND_getScreenRecordPermissionStatus(permission);
+}
+
+void UtilInt:: LONGISLAND_openSystemPreferencePanel(bool &success) {
+    _impl->LONGISLAND_openSystemPreferencePanel(success);
+}

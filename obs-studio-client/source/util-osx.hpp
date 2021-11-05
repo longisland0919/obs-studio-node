@@ -39,6 +39,9 @@ public:
     void LONGISLAND_installPlugin(void);
     void LONGISLAND_uninstallPlugin(void);
     void LONGISLAND_isVirtualCamPluginNeedsInstall(bool &needs);
+    void LONGISLAND_getPermissionsStatus(int &webcam, int &mic);
+    void LONGISLAND_getScreenRecordPermissionStatus(bool &permission);
+    void LONGISLAND_openSystemPreferencePanel(bool &success);
     void setServerWorkingDirectoryPath(std::string path);
 private:
     UtilObjCInt * _impl;
