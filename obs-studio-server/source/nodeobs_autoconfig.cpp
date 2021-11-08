@@ -139,8 +139,8 @@ bool regionOC = false;
 
 bool preferHighFPS  = true;
 bool preferHardware = true;
-int  specificFPSNum = 30;
-int  specificFPSDen = 1;
+int  specificFPSNum = 0;
+int  specificFPSDen = 0;
 
 std::condition_variable cv;
 std::mutex              m;
@@ -960,7 +960,7 @@ void autoConfig::FindIdealHardwareResolution()
 	}
 
 	auto testRes = [&](long double div, int fps_num, int fps_den, bool force) {
-		if (results.size() >= 3)
+		if (!results.empty())
 			return;
 
 		if (!fps_num || !fps_den) {
@@ -993,37 +993,39 @@ void autoConfig::FindIdealHardwareResolution()
 	} else {
 		testRes(1.0, 60, 1, false);
 		testRes(1.0, 30, 1, false);
+		testRes(1.0, 24, 1, false);
 		testRes(1.5, 60, 1, false);
 		testRes(1.5, 30, 1, false);
-		testRes(1.0 / 0.6, 60, 1, false);
-		testRes(1.0 / 0.6, 30, 1, false);
+		testRes(1.5, 24, 1, false);
 		testRes(2.0, 60, 1, false);
 		testRes(2.0, 30, 1, false);
+		testRes(2.0, 24, 1, false);
 		testRes(2.25, 60, 1, false);
-		testRes(2.25, 30, 1, true);
+		testRes(2.25, 30, 1, false);
+		testRes(2.25, 24, 1, true);
 	}
 
-	int minArea = 960 * 540 + 1000;
-
-	if (!specificFPSNum && preferHighFPS && results.size() > 1) {
-		Result& result1 = results[0];
-		Result& result2 = results[1];
-
-		if (result1.fps_num == 30 && result2.fps_num == 60) {
-			int nextArea = result2.cx * result2.cy;
-			if (nextArea >= minArea)
-				results.erase(results.begin());
-		}
-	}
+//	int minArea = 960 * 540 + 1000;
+//
+//	if (!specificFPSNum && preferHighFPS && results.size() > 1) {
+//		Result& result1 = results[0];
+//		Result& result2 = results[1];
+//
+//		if (result1.fps_num == 30 && result2.fps_num == 60) {
+//			int nextArea = result2.cx * result2.cy;
+//			if (nextArea >= minArea)
+//				results.erase(results.begin());
+//		}
+//	}
 
 	Result result     = results.front();
 	idealResolutionCX = result.cx;
 	idealResolutionCY = result.cy;
 
-	if (idealResolutionCX * idealResolutionCY > 1280 * 720) {
-		idealResolutionCX = 1280;
-		idealResolutionCY = 720;
-	}
+//	if (idealResolutionCX * idealResolutionCY > 1280 * 720) {
+//		idealResolutionCX = 1280;
+//		idealResolutionCY = 720;
+//	}
 
 	idealFPSNum = result.fps_num;
 	idealFPSDen = result.fps_den;
@@ -1204,48 +1206,52 @@ bool autoConfig::TestSoftwareEncoding()
 			return false;
 		if (!testRes(1.0, 30, 1, false))
 			return false;
+		if (!testRes(1.0, 24, 1, false))
+			return false;
 		if (!testRes(1.5, 60, 1, false))
 			return false;
 		if (!testRes(1.5, 30, 1, false))
 			return false;
-		if (!testRes(1.0 / 0.6, 60, 1, false))
-			return false;
-		if (!testRes(1.0 / 0.6, 30, 1, false))
+		if (!testRes(1.5, 24, 1, false))
 			return false;
 		if (!testRes(2.0, 60, 1, false))
 			return false;
 		if (!testRes(2.0, 30, 1, false))
 			return false;
+		if (!testRes(2.0, 24, 1, false))
+			return false;
 		if (!testRes(2.25, 60, 1, false))
 			return false;
-		if (!testRes(2.25, 30, 1, true))
+		if (!testRes(2.25, 30, 1, false))
+			return false;
+		if (!testRes(2.25, 24, 1, true))
 			return false;
 	}
 
 	/* -----------------------------------*/
 	/* find preferred settings            */
 
-	int minArea = 960 * 540 + 1000;
+//	int minArea = 960 * 540 + 1000;
 
-	if (!specificFPSNum && preferHighFPS && results.size() > 1) {
-		Result& result1 = results[0];
-		Result& result2 = results[1];
-
-		if (result1.fps_num == 30 && result2.fps_num == 60) {
-			int nextArea = result2.cx * result2.cy;
-			if (nextArea >= minArea)
-				results.erase(results.begin());
-		}
-	}
+//	if (!specificFPSNum && preferHighFPS && results.size() > 1) {
+//		Result& result1 = results[0];
+//		Result& result2 = results[1];
+//
+//		if (result1.fps_num == 30 && result2.fps_num == 60) {
+//			int nextArea = result2.cx * result2.cy;
+//			if (nextArea >= minArea)
+//				results.erase(results.begin());
+//		}
+//	}
 
 	Result result     = results.front();
 	idealResolutionCX = result.cx;
 	idealResolutionCY = result.cy;
 
-	if (idealResolutionCX * idealResolutionCY > 1280 * 720) {
-		idealResolutionCX = 1280;
-		idealResolutionCY = 720;
-	}
+//	if (idealResolutionCX * idealResolutionCY > 1280 * 720) {
+//		idealResolutionCX = 1280;
+//		idealResolutionCY = 720;
+//	}
 
 	idealFPSNum = result.fps_num;
 	idealFPSDen = result.fps_den;
