@@ -43,7 +43,7 @@ void UtilObjCInt::init(void)
 void UtilObjCInt::getPermissionsStatus(bool &webcam, bool &mic)
 {
 	NSOperatingSystemVersion OSversion = [NSProcessInfo processInfo].operatingSystemVersion;
-	if (OSversion.majorVersion >= 10 && OSversion.minorVersion >= 14) {
+	if ((OSversion.majorVersion >= 10 && OSversion.minorVersion >= 14) || OSversion.majorVersion > 10) {
 		AVAuthorizationStatus camStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
 		webcam = camStatus == AVAuthorizationStatusAuthorized;
 
@@ -183,7 +183,7 @@ void UtilObjCInt::LONGISLAND_isVirtualCamPluginNeedsInstall(bool &needs)
 
 void UtilObjCInt::LONGISLAND_getPermissionsStatus(int &webcam, int &mic) {
 	NSOperatingSystemVersion OSversion = [NSProcessInfo processInfo].operatingSystemVersion;
-	if (OSversion.majorVersion >= 10 && OSversion.minorVersion >= 14) {
+	if ((OSversion.majorVersion >= 10 && OSversion.minorVersion >= 14) || OSversion.majorVersion > 10) {
 		AVAuthorizationStatus camStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
 		webcam = camStatus;
 
@@ -200,7 +200,7 @@ void UtilObjCInt::LONGISLAND_getPermissionsStatus(int &webcam, int &mic) {
 
 void UtilObjCInt::LONGISLAND_getScreenRecordPermissionStatus(bool &permission) {
 	NSOperatingSystemVersion OSversion = [NSProcessInfo processInfo].operatingSystemVersion;
-	if (OSversion.majorVersion >= 10 && OSversion.minorVersion >= 15) {
+	if ((OSversion.majorVersion >= 10 && OSversion.minorVersion >= 15) || OSversion.majorVersion > 10) {
 		CFArrayRef windowList = CGWindowListCopyWindowInfo(kCGWindowListOptionOnScreenOnly, kCGNullWindowID);
         NSUInteger numberOfWindows = CFArrayGetCount(windowList);
         NSUInteger numberOfWindowsWithName = 0;
