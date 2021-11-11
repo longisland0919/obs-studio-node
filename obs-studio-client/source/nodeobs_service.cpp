@@ -296,12 +296,25 @@ Napi::Value service::OBS_service_removeCallback(const Napi::CallbackInfo& info)
 
 Napi::Value service::OBS_service_createVirtualWebcam(const Napi::CallbackInfo& info) {
 	std::string name = info[0].ToString().Utf8Value();
+	bool mirror = info[1].ToBoolean().Value();
 
 	auto conn = GetConnection(info);
 	if (!conn)
 		return info.Env().Undefined();
 
-	conn->call("Service", "OBS_service_createVirtualWebcam", {ipc::value(name)});
+	conn->call("Service", "OBS_service_createVirtualWebcam", {ipc::value(name), ipc::value(mirror)});
+	return info.Env().Undefined();
+}
+
+Napi::Value service::OBS_service_updateVirtualWebcam(const Napi::CallbackInfo& info) {
+	std::string name = info[0].ToString().Utf8Value();
+	bool mirror = info[1].ToBoolean().Value();
+
+	auto conn = GetConnection(info);
+	if (!conn)
+		return info.Env().Undefined();
+
+	conn->call("Service", "OBS_service_updateVirtualWebcam", {ipc::value(name), ipc::value(mirror)});
 	return info.Env().Undefined();
 }
 
@@ -487,6 +500,9 @@ void service::Init(Napi::Env env, Napi::Object exports)
 	exports.Set(
 		Napi::String::New(env, "OBS_service_createVirtualWebcam"),
 		Napi::Function::New(env, service::OBS_service_createVirtualWebcam));
+	exports.Set(
+		Napi::String::New(env, "OBS_service_updateVirtualWebcam"),
+		Napi::Function::New(env, service::OBS_service_updateVirtualWebcam));
 	exports.Set(
 		Napi::String::New(env, "OBS_service_removeVirtualWebcam"),
 		Napi::Function::New(env, service::OBS_service_removeVirtualWebcam));

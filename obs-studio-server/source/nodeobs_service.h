@@ -182,6 +182,13 @@ class OBS_service
 	    const int64_t                  id,
 	    const std::vector<ipc::value>& args,
 	    std::vector<ipc::value>&       rval);
+
+	static void OBS_service_updateVirtualWebcam(
+	    void*                          data,
+	    const int64_t                  id,
+	    const std::vector<ipc::value>& args,
+	    std::vector<ipc::value>&       rval);
+
 	static void OBS_service_removeVirtualWebcam(
 	    void*                          data,
 	    const int64_t                  id,
