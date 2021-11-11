@@ -106,6 +106,8 @@ void OBS_service::Register(ipc::server& srv)
 	cls->register_function(std::make_shared<ipc::function>(
 	    "OBS_service_createVirtualWebcam", std::vector<ipc::type>{ipc::type::String}, OBS_service_createVirtualWebcam));
 	cls->register_function(std::make_shared<ipc::function>(
+	    "OBS_service_updateVirtualWebcam", std::vector<ipc::type>{ipc::type::String}, OBS_service_updateVirtualWebcam));
+	cls->register_function(std::make_shared<ipc::function>(
 	    "OBS_service_removeVirtualWebcam", std::vector<ipc::type>{}, OBS_service_removeVirtualWebcam));
 	cls->register_function(std::make_shared<ipc::function>(
 	    "OBS_service_startVirtualWebcam", std::vector<ipc::type>{}, OBS_service_startVirtualWebcam));
@@ -2411,17 +2413,50 @@ void OBS_service::OBS_service_createVirtualWebcam(
 	if (name.empty())
 		return;
 
+ 	bool mirror = (bool)args[1].value_union.i32;
+
 	struct obs_video_info ovi;
 	if (!obs_get_video_info(&ovi))
 		return;
 
 	obs_data_t *settings = obs_data_create();
 	obs_data_set_string(settings, "name", name.c_str());
+	obs_data_set_bool(settings, "mirror", mirror);
 	obs_data_set_int(settings, "width", ovi.output_width);
 	obs_data_set_int(settings, "height", ovi.output_height);
 	obs_data_set_double(settings, "fps", ovi.fps_num);
 
-	virtualWebcamOutput = obs_output_create("virtualcam_output", "virtualcam_output", NULL, NULL);
+	virtualWebcamOutput = obs_output_create("virtualcam_output", "virtualcam_output", settings, NULL);
+	obs_data_release(settings);
+}
+
+
+void OBS_service::OBS_service_updateVirtualWebcam(
+	void*                          data,
+	const int64_t                  id,
+	const std::vector<ipc::value>& args,
+	std::vector<ipc::value>&       rval)
+{
+	if (!virtualWebcamOutput)
+		return;
+	std::string name = args[0].value_str;
+	if (name.empty())
+		return;
+
+ 	bool mirror = (bool)args[1].value_union.i32;
+
+	struct obs_video_info ovi;
+	if (!obs_get_video_info(&ovi))
+		return;
+
+	obs_data_t *settings = obs_data_create();
+	obs_data_set_string(settings, "name", name.c_str());
+	obs_data_set_bool(settings, "mirror", mirror);
+	obs_data_set_int(settings, "width", ovi.output_width);
+	obs_data_set_int(settings, "height", ovi.output_height);
+	obs_data_set_double(settings, "fps", ovi.fps_num);
+
+	obs_output_update(virtualWebcamOutput, settings);
 	obs_data_release(settings);
 }
 
