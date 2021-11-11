@@ -123,6 +123,12 @@ class OBS_API
 	    const std::vector<ipc::value>& args,
 	    std::vector<ipc::value>&       rval);
 
+	static void LONGISLAND_GetMallocNum(
+	    void*                          data,
+	    const int64_t                  id,
+	    const std::vector<ipc::value>& args,
+	    std::vector<ipc::value>&       rval);
+
 	protected:
 	static void initAPI(void);
 	static bool openAllModules(int& video_err);

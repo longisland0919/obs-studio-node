@@ -136,6 +136,9 @@ void OBS_API::Register(ipc::server& srv)
 	cls->register_function(std::make_shared<ipc::function>(
 	    "SetUsername", std::vector<ipc::type>{ipc::type::String}, SetUsername));
 
+	cls->register_function(std::make_shared<ipc::function>(
+	    "LONGISLAND_GetMallocNum", std::vector<ipc::type>{}, LONGISLAND_GetMallocNum));
+
 	srv.register_collection(cls);
 	g_server = &srv;
 }
@@ -1065,6 +1068,17 @@ void OBS_API::SetUsername(
 
 	rval.push_back(ipc::value((uint64_t)ErrorCode::Ok));
 
+	AUTO_DEBUG;
+}
+
+void OBS_API::LONGISLAND_GetMallocNum(
+    void*                          data,
+    const int64_t                  id,
+    const std::vector<ipc::value>& args,
+    std::vector<ipc::value>&       rval)
+{
+	rval.push_back(ipc::value((uint64_t)ErrorCode::Ok));
+	rval.push_back(ipc::value((uint64_t)bnum_allocs()));
 	AUTO_DEBUG;
 }
 

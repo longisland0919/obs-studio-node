@@ -43,4 +43,5 @@ namespace api
 	Napi::Value RequestPermissions(const Napi::CallbackInfo& info);
     Napi::Value LONGISLAND_GetPermissionsStatus(const Napi::CallbackInfo& info);
     Napi::Value LONGISLAND_GetScreenRecordPermissionStatus(const Napi::CallbackInfo& info);
+	Napi::Value LONGISLAND_GetMallocNum(const Napi::CallbackInfo& info);
 }

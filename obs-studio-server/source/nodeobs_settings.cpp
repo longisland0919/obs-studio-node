@@ -4183,38 +4183,45 @@ void getDevices(
 		obs_data_set_string(settings, "audio_device_id", dummy_device_name);
 	}
 
-	auto dummy_source = obs_source_create(source_id, dummy_device_name, settings, nullptr);
+	obs_source_t *dummy_source = nullptr;
+	obs_properties_t *props = nullptr;
+	obs_property_t *prop = nullptr;
+
+	dummy_source = obs_source_create(source_id, dummy_device_name, settings, nullptr);
 	if (!dummy_source)
-		return;
+		goto fail;
 
-	auto props = obs_source_properties(dummy_source);
+	props = obs_source_properties(dummy_source);
 	if (!props)
-		return;
+		goto fail;
 
-	auto prop = obs_properties_get(props, property_name);
+	prop = obs_properties_get(props, property_name);
 	if (!prop)
-		return;
+		goto fail;
 
-	size_t items = obs_property_list_item_count(prop);
-	if (rval.size() > 1)
-		rval[1].value_union.ui64 += items;
-	else
-		rval.push_back(ipc::value((uint64_t)items));
+	{
+		size_t items = obs_property_list_item_count(prop);
+		if (rval.size() > 1)
+			rval[1].value_union.ui64 += items;
+		else
+			rval.push_back(ipc::value((uint64_t)items));
 
-	for (size_t idx = 0; idx < items; idx++) {
-		const char* description = obs_property_list_item_name(prop, idx);
-		const char* device_id = obs_property_list_item_string(prop, idx);
+		for (size_t idx = 0; idx < items; idx++) {
+			const char* description = obs_property_list_item_name(prop, idx);
+			const char* device_id = obs_property_list_item_string(prop, idx);
 
-		if (!description || !strcmp(description, "") ||
-			!device_id || !strcmp(device_id, "")) {
-			rval[1].value_union.ui64--;
-			continue;
+			if (!description || !strcmp(description, "") ||
+			    !device_id || !strcmp(device_id, "")) {
+				rval[1].value_union.ui64--;
+				continue;
+			}
+
+			rval.push_back(ipc::value(description));
+			rval.push_back(ipc::value(device_id));
 		}
-
-		rval.push_back(ipc::value(description));
-		rval.push_back(ipc::value(device_id));
 	}
 
+fail:
 	obs_properties_destroy(props);
 	obs_data_release(settings);
 	obs_source_release(dummy_source);
