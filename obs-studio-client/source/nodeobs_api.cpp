@@ -345,6 +345,20 @@ Napi::Value api::RequestPermissions(const Napi::CallbackInfo& info)
 	return info.Env().Undefined();
 }
 
+Napi::Value api::LONGISLAND_GetMallocNum(const Napi::CallbackInfo& info) {
+
+	auto conn = GetConnection(info);
+	if (!conn)
+		return info.Env().Undefined();
+
+	std::vector<ipc::value> response = conn->call_synchronous_helper("API", "LONGISLAND_GetMallocNum", {});
+
+	if (!ValidateResponse(info, response))
+		return info.Env().Undefined();
+
+	return Napi::Number::New(info.Env(), response[1].value_union.ui32);
+}
+
 void api::Init(Napi::Env env, Napi::Object exports)
 {
 	exports.Set(Napi::String::New(env, "OBS_API_initAPI"), Napi::Function::New(env, api::OBS_API_initAPI));
@@ -359,4 +373,5 @@ void api::Init(Napi::Env env, Napi::Object exports)
 	exports.Set(Napi::String::New(env, "RequestPermissions"), Napi::Function::New(env, api::RequestPermissions));
 	exports.Set(Napi::String::New(env, "LONGISLAND_GetPermissionsStatus"), Napi::Function::New(env, api::LONGISLAND_GetPermissionsStatus));
 	exports.Set(Napi::String::New(env, "LONGISLAND_GetScreenRecordPermissionStatus"), Napi::Function::New(env, api::LONGISLAND_GetScreenRecordPermissionStatus));
+	exports.Set(Napi::String::New(env, "LONGISLAND_GetMallocNum"), Napi::Function::New(env, api::LONGISLAND_GetMallocNum));
 }

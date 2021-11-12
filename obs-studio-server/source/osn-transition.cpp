@@ -90,6 +90,7 @@ void osn::Transition::Create(
 
 	obs_source_t* source = obs_source_create(sourceId.c_str(), name.c_str(), settings, hotkeys);
 	if (!source) {
+		obs_data_release(settings);
 		PRETTY_ERROR_RETURN(ErrorCode::Error, "Failed to create transition.");
 	}
 
